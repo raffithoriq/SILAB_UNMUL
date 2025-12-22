@@ -4,10 +4,17 @@
     'subtitle' => 'Admin Panel',
 ])
 
+@php
+    $baseItem = 'flex items-center gap-3 px-3 py-2 rounded-lg transition';
+    $activeItem = 'bg-blue-50 text-blue-700 ring-1 ring-blue-200';
+    $inactiveItem = 'text-gray-700 hover:bg-gray-100';
+
+    $iconActive = 'text-blue-600';
+    $iconInactive = 'text-gray-400';
+@endphp
+
 <aside id="sidebar"
-    class="fixed z-40 inset-y-0 left-0 w-72 bg-white border-r border-gray-200
-         transform -translate-x-full lg:translate-x-0 transition-transform duration-200
-         flex flex-col">
+    class="fixed z-40 inset-y-0 left-0 w-72 mt-3 ml-3 mb-3 flex flex-col bg-white border border-gray-200 rounded-lg shadow-lg transform -translate-x-full lg:translate-x-0 transition-transform duration-200">
 
     {{-- Brand --}}
     <div class="h-16 px-6 flex items-center justify-between border-b border-gray-100">
@@ -31,23 +38,27 @@
     {{-- Menu --}}
     <nav class="px-4 py-4 flex-1 overflow-y-auto">
         <ul class="space-y-3">
+
+            {{-- Dashboard --}}
+            @php $isDashboard = request()->is('user'); @endphp
             <li>
                 <a href="{{ url('/user') }}"
-                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    <svg class="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
+                    class="{{ $baseItem }} {{ $isDashboard ? $activeItem : $inactiveItem }}">
+                    <svg class="h-5 w-5 {{ $isDashboard ? $iconActive : $iconInactive }}" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M3 13h8V3H3v10zM13 21h8V11h-8v10zM13 3h8v6h-8V3zM3 17h8v4H3v-4z" />
                     </svg>
                     <span class="text-sm font-medium">Dashboard</span>
                 </a>
             </li>
 
+            {{-- Peminjaman Ruangan --}}
+            @php $isRuangan = request()->routeIs('user.pinjam-ruangan') || request()->is('user/pinjam-ruangan'); @endphp
             <li>
-                <a href="{{ url('/admin/tables') }}"
-                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    {{-- Calendar icon (Peminjaman Ruangan) --}}
-                    <svg class="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
+                <a href="{{ route('user.pinjam-ruangan') }}"
+                    class="{{ $baseItem }} {{ $isRuangan ? $activeItem : $inactiveItem }}">
+                    <svg class="h-5 w-5 {{ $isRuangan ? $iconActive : $iconInactive }}" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M8 2v4M16 2v4" />
                         <rect x="3" y="4" width="18" height="18" rx="2" />
                         <path d="M3 10h18" />
@@ -56,12 +67,16 @@
                 </a>
             </li>
 
+            {{-- Peminjaman Barang --}}
+            @php
+                $isBarang = request()->routeIs('user.pinjam-barang') || request()->is('user/pinjam-barang');
+            @endphp
+
             <li>
-                <a href="{{ url('/admin/virtual-reality') }}"
-                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    {{-- Package/Box icon (Peminjaman Barang) --}}
-                    <svg class="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
+                <a href="{{ route('user.pinjam-barang') }}"
+                    class="{{ $baseItem }} {{ $isBarang ? $activeItem : $inactiveItem }}">
+                    <svg class="h-5 w-5 {{ $isBarang ? $iconActive : $iconInactive }}" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 8l-9-5-9 5 9 5 9-5z" />
                         <path d="M3 8v8l9 5 9-5V8" />
                         <path d="M12 13v8" />
@@ -70,12 +85,14 @@
                 </a>
             </li>
 
+
+            {{-- Status Pengajuan --}}
+            @php $isStatus = request()->routeIs('user.status-pengajuan') || request()->is('user/status-pengajuan'); @endphp
             <li>
-                <a href="{{ url('/admin/billing') }}"
-                    class="flex items-center gap-3 px-3 py-2 rounded-lg text-gray-700 hover:bg-gray-100">
-                    {{-- Clipboard/Checklist icon (Status Pengajuan) --}}
-                    <svg class="h-5 w-5 text-gray-400" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                        stroke-width="2">
+                <a href="{{ route('user.status-pengajuan') }}"
+                    class="{{ $baseItem }} {{ $isStatus ? $activeItem : $inactiveItem }}">
+                    <svg class="h-5 w-5 {{ $isStatus ? $iconActive : $iconInactive }}" viewBox="0 0 24 24"
+                        fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M9 5h6" />
                         <path d="M9 3h6a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
                         <path d="M9 11l2 2 4-4" />
@@ -84,9 +101,9 @@
                     <span class="text-sm font-medium">Status Pengajuan</span>
                 </a>
             </li>
+
         </ul>
     </nav>
 
-    {{-- Slot tambahan (opsional) misal tombol/badge di bawah --}}
     {{ $slot ?? '' }}
 </aside>
